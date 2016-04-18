@@ -13,9 +13,9 @@
 <body>
     <div ng-controller="MainController">
         <h2>Server Says</h2>
-        <button style="float: right" class="btn btn-md" ng-click="sayHelloToServer()">Say Hello</button>
+        <button style="float: right" class="btn btn-md" ng-click="sayHelloToServer()">Say It Again</button>
         <div ng-repeat="message in messages track by $index">
-            {{message}}
+            <span ng-style="getStyle(message)">{{message}}</span>
         </div>
         <!--<div>
             <button class="btn btn-md" ng-click="runHello()">Run</button>
