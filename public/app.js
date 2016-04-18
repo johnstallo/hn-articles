@@ -9,7 +9,7 @@ app.controller('MainController', function($scope, $http, socket) {
     $scope.messages = [];
     $scope.sayHelloToServer = function() {
         $http.get("/api").then(function(response) {
-            $scope.messages.push(response.data + new Date());
+            $scope.messages.push(response.data);
         });
     };
     
