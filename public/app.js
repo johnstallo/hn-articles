@@ -5,9 +5,15 @@ var app = angular.module('myApp', ['ngRoute']);
 //     });
 // }])
 app.controller('MainController', function($scope, $http, socket) {
-    $http.get("/api").then(function(response) {
-        $scope.message = response.data;
-    });
+
+    $scope.messages = [];
+    $scope.sayHelloToServer = function() {
+        $http.get("/api").then(function(response) {
+            $scope.messages.push(response.data);
+        });
+    };
+    
+    $scope.sayHelloToServer();
 
     // $scope.messages = [];
     // socket.on('hello', function(data) {
@@ -16,11 +22,11 @@ app.controller('MainController', function($scope, $http, socket) {
     //     });
     //     console.log("recieved hello");
     // });
-    
+
     // $scope.runHello = function() {
     //     socket.emit('greet', 30);
     // };
-    
+
     // $scope.printResponse = function(message) {
     //   return message[19];  
     // };
