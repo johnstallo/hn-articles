@@ -49,8 +49,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
 app.controller('MainController', function($scope, $http, $state, Articles) {
 
     Articles.get()
-        .then(function(response) {
-            $scope.articles = response.data;
+        .success(function(data, status, headers, config) {
+            console.log("API Gateway hostname: " + headers('Host-Name'));
+            $scope.articles = data;
         });
 
     $scope.openSubmitScreen = function() {
@@ -58,11 +59,10 @@ app.controller('MainController', function($scope, $http, $state, Articles) {
     };
 
     $scope.refreshComments = function(articleID) {
-        console.log()
         Articles.getComments(articleID)
-            .then(function(response) {
-                console.log("refreshed Comments: %j", response);
-                $scope.articles[articleID].comments = response.data;
+            .success(function(data, status, headers, config) {
+                console.log("API Gateway hostname: " + headers('Host-Name'));
+                $scope.articles[articleID].comments = data;
             });
     };
 
@@ -97,7 +97,7 @@ app.factory('Articles', ['$http', function($http) {
             return $http.post('/api/comments', commentData);
         },
         getComments: function(articleID) {
-            console.log("Refreshing comments for article " + articleID);
+            //console.log("Refreshing comments for article " + articleID);
             return $http.get('/api/articles/' + articleID + '/comments');
         }
     }

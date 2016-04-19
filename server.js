@@ -9,12 +9,6 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 
-// api -------------------------------------------------------------
-app.get('/api', function(req, res) {
-    request(process.env.SERVICE_B_MASTER_URL, function(error, response, body) {
-        res.send('Hello from service A running on ' + os.hostname() + ' and ' + body);
-    });
-});
 
 // application -------------------------------------------------------------
 app.use(express.static(__dirname + '/public')); 		// set the static files location /public/img will be /img for users
@@ -24,17 +18,17 @@ app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request
 
+app.use(function(req, res, next) {
+    console.log("Sending response from: " + os.hostname());
+    res.setHeader('Host-Name', os.hostname());
+    return next();
+});
+
 var articles = [
     { _id: 0, url: "http://playground.tensorflow.org/", title: "Tinker with a Neural Network in Your Browser", votes: 0 },
     { _id: 1, url: "http://paulgraham.com/pgh.html", title: "How to Make Pittsburgh a Startup Hub", votes: 0 },
     { _id: 2, url: "http://www.nytimes.com/2016/04/13/science/alpha-centauri-breakthrough-starshot-yuri-milner-stephen-hawking.html?mabReward=A6&moduleDetail=recommendations-2&action=click&contentCollection=Americas&region=Footer&module=WhatsNext&version=WhatsNext&contentID=WhatsNext&src=recg&pgtype=article", title: "A Visionary Project Aims for Alpha Centauri", votes: 0 },
     { _id: 3, url: "https://code.facebook.com/posts/1755691291326688/introducing-facebook-surround-360-an-open-high-quality-3d-360-video-capture-system", title: "Continuous Deployment at Instagram", votes: 0 },
-];
-
-var comments = [
-    { _id: 0, articleID: 0, text: "Great article." },
-    { _id: 1, articleID: 0, text: "I wish the author would explain more about the context of his experience." },
-    { _id: 2, articleID: 1, text: "Very thoroughly researched, top notch journalism." },
 ];
 
 // api ---------------------------------------------------------------------
@@ -47,17 +41,12 @@ app.get('/api/articles', function(req, res) {
     res.send(articles);
 });
 
+var commentsServiceUrl = process.env.COMMENTS_MASTER_URL;
+
 app.get('/api/articles/:id/comments', function(req, res) {
     var articleID = req.params.id;
-    // var commentsByArticleID = _.filter(comments, function(o) { return o.articleID == articleID });
     
-    // console.log("found articles for articleID:" + articleID + ", %j", commentsByArticleID);
-    
-    // res.send(commentsByArticleID);
-    
-    request(process.env.SERVICE_B_MASTER_URL + '/api/articles/' + articleID + '/comments', function(error, response, body) {
-        //res.send('Hello from service A running on ' + os.hostname() + ' and ' + body);
-        console.log("sending body %j", body);
+    request(commentsServiceUrl + '/api/articles/' + articleID + '/comments', function(error, response, body) {    
         res.send(body);
     });
 });
