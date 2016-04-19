@@ -2,53 +2,29 @@
 <html ng-app="myApp">
 
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-route.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="app.css">
+    
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.js"></script>
     <script src="app.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <link rel="stylesheet" href="app.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/css/bootstrap-combined.min.css">
 </head>
 
 <body>
-    <div ng-controller="MainController">
-        <h2>Server Says</h2>
-        <button style="float: right" class="btn btn-md" ng-click="sayHelloToServer()">Say It Again</button>
-        <div ng-repeat="message in messages track by $index">
-            <span class="message" ng-style="getStyle(message)">{{message}}</span>
-        </div>
-        <!--<div>
-            <button class="btn btn-md" ng-click="runHello()">Run</button>
-            <div>
-                <span ng-repeat="m in messages">{{printResponse(m.message)}} </span>
-            </div>
-        </div>-->
-        <!--<pre>{{messages}}</pre>-->
+    <!-- HEADER -->
+    <div class="text-center hn-app-title">
+        <h1>HN App</h1>
     </div>
+
+    <div ui-view></div>
+
+    <!-- FOOTER -->
+    <!--<div class="text-center text-muted hn-footer-text">
+        <p>A demo by <a href="https://mindaro.microsoft.io">Mindaro</a>.
+            <br/> Read the <a href="https://mindaro.microsoft.io/getting-started">tutorial</a>.
+        </p>
+    </div>-->
 </body>
 
 </html>
-
-<!--<!doctype>
-<html ng-app="sampleApp">
-  <head>
-  </head>
-
-  <body ng-controller="IndexController">
-    <label>Please enter your name: </label>
-    <input ng-model="currentCustomer.name"/>
-    <button ng-click="join()">Join</button>
-    <br/>
-
-    <h1>New Customers: </h1>
-    <ul>
-      <li ng-repeat="customer in newCustomers">{{customer.name}}</li>
-    </ul>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular-route.js"></script>
-    <script src="app.js"></script>
-  </body>
-
-</html>-->

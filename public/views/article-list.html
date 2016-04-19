@@ -1,0 +1,28 @@
+<div id="article-list" class="row">    
+    <div class="col-sm-8 col-sm-offset-1">
+        <button type="submit" class="btn btn-primary btn-md hn-button pull-right" ng-click="openSubmitScreen()">Submit Article</button>
+        <div ng-repeat="article in articles" class="article">
+            <div class="article-title">{{$index + 1}}.
+                        <img class="upvote-arrow" src="images/up-arrow.png" ng-click="upvoteArticle(article._id)"/> 
+                        <a class="article-title" ng-href="{{article.url}}" target="_blank">{{article.title}}</a> 
+            </div>
+            <div class="article-subtitle">
+                {{article.votes}} votes | <a href="#" class="article-subtitle-link" ng-click="refreshComments(article._id)">Comments</a>
+                <div class="comment" ng-repeat="comment in article.comments">{{comment.text}}</div>
+            </div>
+        </div>
+
+        <p class="text-center" ng-show="loading">
+            <span class="fa fa-spinner fa-spin fa-3x"></span>
+        </p>
+        
+        <!--<pre>{{articles | json }}</pre>-->
+    </div>
+</div>
+
+<!-- FORM TO CREATE ARTICLES -->
+<!--<div id="article-form" class="row">
+    <div class="col-sm-8 col-sm-offset-2 text-center">
+        <button type="submit" class="btn btn-primary btn-md hn-button" ng-click="openSubmitScreen()">Submit Article</button>
+    </div>
+</div>-->

@@ -1,80 +1,104 @@
-var app = angular.module('myApp', ['ngRoute']);
-// .config(['$routeProvider', function($routeProvider) {
-//     $routeProvider.when('/', {
-//         templateUrl: '/index.html'
-//     });
-// }])
-app.controller('MainController', function($scope, $http, socket) {
+var app = angular.module('myApp', ['ui.router']);
 
-    $scope.messages = [];
-    $scope.sayHelloToServer = function() {
-        $http.get("/api").then(function(response) {
-            $scope.messages.push(response.data);
+app.config(function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise("/new");
+
+    $stateProvider
+        .state('new', {
+            url: "/new",
+            templateUrl: "views/article-list.html",
+            controller: 'MainController',
+            resolve: {
+                theArticles: function(Articles) {
+                    console.log("loading articles...");
+                    return Articles.get();
+                }
+            }
+        })
+        .state('submit', {
+            url: "/submit",
+            templateUrl: "views/article-submit.html",
+            controller: function($scope, $state, Articles) {
+                $scope.title = "Submit Article";
+
+                $scope.formData = { title: "", url: "" };
+                $scope.submitArticle = function() {
+                    var newArticle = { title: $scope.formData.title, url: $scope.formData.url };
+
+                    Articles.submit(newArticle)
+                        .then(function(data) {
+                            $state.go('new', {}, { reload: true });
+                        });
+                };
+            }
+        })
+        .state('item', {
+            url: "/item/:id",
+            templateUrl: "views/article.html",
+            controller: function($scope, $state, $stateParams, Articles, article) {
+                $scope.article = article.data;
+            },
+            resolve: {
+                article: function($stateParams, Articles) {
+                    return Articles.getArticle($stateParams.id);
+                }
+            }
         });
-    };
-    
-    $scope.sayHelloToServer();
-    
-    var styles = [];
-    var colors = ["gray", "green", "red", "blue", "orange", "black"];
-    var color = 0;
-    $scope.getStyle = function(message) {
-        if (!styles[message]) {
-            styles[message] = {'color': colors[color]};
-            color = color < colors.length - 1 ? color + 1 : 0;
-        }
-        return styles[message];
-    }
-
-    // $scope.messages = [];
-    // socket.on('hello', function(data) {
-    //     $scope.$apply(function() {
-    //         $scope.messages.push(data);
-    //     });
-    //     console.log("recieved hello");
-    // });
-
-    // $scope.runHello = function() {
-    //     socket.emit('greet', 30);
-    // };
-
-    // $scope.printResponse = function(message) {
-    //   return message[19];  
-    // };
 });
 
-// var app = angular.module('sampleApp', ['ngRoute']);
+app.controller('MainController', function($scope, $http, $state, Articles) {
 
-// app.config(['$routeProvider', function($routeProvider) {
-//   $routeProvider.when('/', {
-//     templateUrl: '/index.html'
-//   });
-// }]);
+    Articles.get()
+        .then(function(response) {
+            $scope.articles = response.data;
+        });
 
-app.factory('socket', ['$rootScope', function($rootScope) {
-    var socket = io.connect();
+    $scope.openSubmitScreen = function() {
+        $state.go('submit');
+    };
+
+    $scope.refreshComments = function(articleID) {
+        console.log()
+        Articles.getComments(articleID)
+            .then(function(response) {
+                console.log("refreshed Comments: %j", response);
+                $scope.articles[articleID].comments = response.data;
+            });
+    };
+
+});
+
+app.factory('Articles', ['$http', function($http) {
 
     return {
-        on: function(eventName, callback) {
-            socket.on(eventName, callback);
+        get: function() {
+            return $http.get('/api/articles');
         },
-        emit: function(eventName, data) {
-            socket.emit(eventName, data);
+        getArticle: function(articleID) {
+            return $http.get('/api/articles/' + articleID);
+        },
+        create: function(articleData) {
+            return $http.post('/api/articles', articleData);
+        },
+        delete: function(id) {
+            // TODO
+        },
+        submit: function(newArticle) {
+            console.log("posting new article %j", newArticle);
+            return $http.post('/api/submit', newArticle);
+        },
+        upvote: function(id) {
+            var articleData = {
+                articleID: id
+            };
+            return $http.post('/api/upvote/', articleData);
+        },
+        createComment: function(commentData) {
+            return $http.post('/api/comments', commentData);
+        },
+        getComments: function(articleID) {
+            console.log("Refreshing comments for article " + articleID);
+            return $http.get('/api/articles/' + articleID + '/comments');
         }
-    };
+    }
 }]);
-
-// app.controller('IndexController', function($scope, socket) {
-//   $scope.newCustomers = [];
-//   $scope.currentCustomer = {};
-
-//   $scope.join = function() {
-//     socket.emit('add-customer', $scope.currentCustomer);
-//   };
-
-//   socket.on('notification', function(data) {
-//     $scope.$apply(function () {
-//       $scope.newCustomers.push(data.customer);
-//     });
-//   });
-// });

@@ -1,4 +1,101 @@
-.message {
-    font-family: Courier New, Courier, monospace;
-    font-weight: bold;
+html {
+    overflow-y: scroll;
+}
+
+body {
+    /*padding-top: 0px;*/
+    margin:0;
+    padding:0;
+}
+
+#article-list {
+    margin:0;
+    margin-bottom: 30px;
+    margin-left:10px;
+    margin-right:10px;
+}
+
+#article-form {
+    margin:0;
+    margin-top:50px;
+    margin-bottom: 30px;
+}
+
+#article-submit {
+    margin:0;
+    margin-bottom: 30px;
+    margin-left:10px;
+    margin-right:10px;
+}
+
+.body-area {
+    margin:0;
+    margin-bottom: 30px;
+    margin-left:10px;
+    margin-right:10px;
+}
+ 
+.article {
+    color: gray;
+    margin-bottom:6px;
+}       
+
+.article-title {
+    font-size: 16px;
+}
+
+a.article-title {
+    text-decoration: none;
+}
+
+.article-subtitle {
+    font-size:10px;
+    margin-left:41px;
+    color:gray;
+}
+
+.article-subtitle-link{ 
+    text-decoration: none;
+    color:gray;
+}
+
+.hn-app-title {
+    margin-bottom: 30px;
+    background-color:#ff6600;
+    padding-top: 5px;
+    padding-bottom:5px;
+    color:white;
+}
+
+.upvote-arrow {
+    width:18px;
+    height:18px;
+    cursor: pointer;
+}
+
+.hn-button {
+    background-color:#ff6600;
+    border-color:#ff6600;
+}
+
+.comment {
+font-size: 13px;
+    color: black;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+@media (max-width: 768px) { 
+    .article-title {
+        font-size: 14px;
+    }
+    
+    .hn-app-title h1 {
+        font-size: 28px;
+        margin-bottom:10px;
+        padding-top: 0px;
+        padding-bottom:0px;
+    }
 }
